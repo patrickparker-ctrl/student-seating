@@ -2,42 +2,178 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Coaching Seating Chart</title>
+    <title>Instructional Coach Student Engagement</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; background: #f4f7f6; }
-        .setup { margin-bottom: 20px; background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .grid-container { display: grid; gap: 10px; margin-top: 20px; }
-        .cell { 
-            height: 100px; border: 2px solid #bdc3c7; background: white; 
-            border-radius: 8px; display: flex; align-items: center; justify-content: center;
-            padding: 5px; cursor: pointer; text-align: center; font-size: 14px;
-        }
-        .cell:hover { background: #eef; }
-        .cell.active { border-color: #2980b9; background: #ebf5fb; color: #2980b9; }
-        [contenteditable]:focus { outline: 2px solid #2980b9; background: white; }
-        button { padding: 10px 20px; background: #27ae60; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        /* Import a fancy font from Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Poppins:wght@300;400;600&display=swap');
 
-        /* Added back the PDF print styling so exports look clean */
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            padding: 0; 
+            margin: 0; 
+            background: #f3f0f7; /* Light purple-tinted background */
+            color: #4a4a4a;
+        }
+
+        /* Fancy Header Styling */
+        header {
+            background-color: #6c5ce7; /* Elegant purple */
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-family: 'Playfair Display', serif;
+            margin: 0;
+            font-size: 2.5rem;
+            letter-spacing: 1px;
+        }
+
+        header p {
+            margin: 5px 0 0;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .setup { 
+            margin-bottom: 25px; 
+            background: #fff; 
+            padding: 20px; 
+            border-radius: 12px; 
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .setup label {
+            font-weight: 600;
+            color: #6c5ce7;
+        }
+
+        .setup input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            outline-color: #6c5ce7;
+        }
+
+        .grid-container { 
+            display: grid; 
+            gap: 12px; 
+            margin-top: 20px; 
+        }
+
+        .cell { 
+            height: 120px; 
+            border: 2px dashed #d1d1d1; 
+            background: white; 
+            border-radius: 10px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            padding: 10px; 
+            cursor: pointer; 
+            text-align: center; 
+            font-size: 14px;
+            transition: all 0.3s ease;
+            color: #aaa;
+        }
+
+        .cell:hover { 
+            background: #f8f7ff;
+            border-color: #6c5ce7;
+        }
+
+        .cell.active { 
+            border: 2px solid #6c5ce7; 
+            background: #ffffff; 
+            color: #2d3436;
+            font-weight: normal;
+            box-shadow: 0 4px 6px rgba(108, 92, 231, 0.1);
+        }
+
+        /* This styles the desk when you are typing in it */
+        [contenteditable]:focus { 
+            outline: 2px solid #6c5ce7; 
+            background: #fff;
+            box-shadow: 0 0 10px rgba(108, 92, 231, 0.2);
+        }
+
+        button { 
+            padding: 12px 24px; 
+            background: #6c5ce7; 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            transition: transform 0.1s, background 0.2s;
+        }
+
+        button:hover {
+            background: #a29bfe;
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        #save-status { 
+            font-size: 0.9rem;
+            color: #6c5ce7;
+            font-style: italic;
+        }
+
+        /* --- PDF print styling --- */
         @media print {
-            body { background: white; padding: 0; }
-            .setup { display: none !important; }
-            .cell:not(.active) { visibility: hidden; border: none; }
-            .cell { border: 2px solid #333 !important; color: black !important; }
+            body { background: white !important; padding: 0; }
+            header, .setup { display: none !important; }
+            .grid-container { margin-top: 0; }
+            .cell:not(.active) { visibility: hidden; border: none !important; }
+            .cell { 
+                border: 1px solid #6c5ce7 !important; 
+                color: black !important; 
+                height: auto !important;
+                min-height: 100px;
+                page-break-inside: avoid;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="setup">
-        <h2>Configure Room first and then add your notes for the student and the behavior they show being engaged!</h2>
-        Rows: <input type="number" id="rows" value="5" style="width: 50px;">
-        Columns: <input type="number" id="cols" value="6" style="width: 50px;">
-        <button onclick="generateGrid()">Generate New Room</button>
-        <button onclick="window.print()" style="background:#2980b9">Export PDF</button>
-        <span id="save-status" style="margin-left: 15px; color: #27ae60; font-weight: bold;"></span>
-    </div>
+    <header>
+        <h1>Instructional Coach Student Engagement</h1>
+        <p>Dynamic Classroom Observation Tool</p>
+    </header>
 
-    <div id="classroom" class="grid-container"></div>
+    <div class="main-content">
+        <div class="setup">
+            <label for="rows">Rows:</label>
+            <input type="number" id="rows" value="5" min="1" max="20">
+            
+            <label for="cols">Columns:</label>
+            <input type="number" id="cols" value="6" min="1" max="20">
+            
+            <button onclick="generateGrid()">Generate New Room</button>
+            <button onclick="window.print()" style="background:#4834d4">Export PDF</button>
+            <span id="save-status"></span>
+        </div>
+
+        <div id="classroom" class="grid-container"></div>
+    </div>
 
     <script>
         // Save the current room layout and notes to the browser's memory
@@ -61,9 +197,8 @@
 
             localStorage.setItem('coachingRoom', JSON.stringify(roomData));
             
-            // Show a quick "Saved!" indicator
             const status = document.getElementById('save-status');
-            status.innerText = "Saved!";
+            status.innerText = "Progress Saved";
             setTimeout(() => status.innerText = "", 2000);
         }
 
@@ -79,7 +214,7 @@
             for (let i = 0; i < rows * cols; i++) {
                 let cell = document.createElement('div');
                 cell.className = 'cell';
-                cell.innerText = "Click to Activate";
+                cell.innerText = "Empty Space";
                 
                 cell.onclick = function() {
                     if (!this.classList.contains('active')) {
@@ -87,17 +222,16 @@
                         this.innerText = "";
                         this.setAttribute('contenteditable', 'true');
                         this.focus();
-                        saveRoom(); // Save as soon as we activate a desk
+                        saveRoom();
                     }
                 };
 
-                // Auto-save whenever you type or click away
                 cell.onkeyup = saveRoom;
                 cell.onblur = saveRoom;
 
                 container.appendChild(cell);
             }
-            saveRoom(); // Save the new empty layout
+            saveRoom();
         }
 
         // Load the room from memory when the page opens
@@ -121,7 +255,7 @@
                         cell.innerText = data.text;
                         cell.setAttribute('contenteditable', 'true');
                     } else {
-                        cell.innerText = "Click to Activate";
+                        cell.innerText = "Empty Space";
                     }
                     
                     cell.onclick = function() {
@@ -140,11 +274,10 @@
                     container.appendChild(cell);
                 });
             } else {
-                generateGrid(); // If no save exists, make a default room
+                generateGrid();
             }
         }
 
-        // Start loading as soon as the app opens
         window.onload = loadRoom;
     </script>
 </body>
